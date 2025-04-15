@@ -1,0 +1,9 @@
+mysql-connector-python
+pandas
+python-dotenv
+numpy
+notebook
+matplotlib
+scikit-learn
+sqlalchemy
+seaborn
