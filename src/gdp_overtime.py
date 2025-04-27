@@ -8,13 +8,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 #Load GDP data
-gdp = pd.read_csv(r"C:\Users\loren\Downloads\gdp-data-analysis-main\gdp-data-analysis-main\data\processed\GPDIC1_normalized.csv")
+gdp = pd.read_csv('data/processed/GPDIC1_normalized.csv')
+
 gdp['date'] = pd.to_datetime(gdp['date'])
 gdp['year'] = gdp['date'].dt.year
 gdp.rename(columns={'Gross_Private_Investment_real': 'GDP'}, inplace=True)
 
 #Load Technology Timeline
-tech = pd.read_csv(r"C:\Users\loren\Downloads\tech_timeline.csv")
+tech = pd.read_csv('src/tech_timeline.csv')
+
+
 
 #Filters tech events to only match GDP years
 tech = tech[(tech['year'] >= gdp['year'].min()) & (tech['year'] <= gdp['year'].max())]
@@ -40,34 +43,6 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
 
 
 
