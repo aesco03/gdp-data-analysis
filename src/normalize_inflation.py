@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 # Base year for normalization (pick something modern)
-BASE_YEAR = 2020
+BASE_YEAR = 2017
 
 # Load CPI
 cpi = pd.read_csv("data/raw/fred/CPIAUCSL.csv")

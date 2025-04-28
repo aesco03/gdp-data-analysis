@@ -1,0 +1,36 @@
+2,Consumption of fixed capital,2011,2161.7,2285.5,2204.6,2232.2,2267.6,2303.6,2338.4
+3,Net value added,11479.9,12001.3,12666.8,12301.4,12499.7,12607.2,12688.0,12872.2
+4,Compensation of employees,7594.5,8018.6,8475.7,8157.1,8397.0,8443.8,8479.2,8582.7
+5,Wages and salaries,6451.3,6791.6,7168.7,6904.1,7111.8,7144.6,7165.8,7252.8
+6,Supplements to wages and salaries,1143.2,1226.9,1306.9,1252.9,1285.2,1299.2,1313.4,1329.9
+7,Taxes on production and imports less subsidies,1110.2,1124.7,1172.6,1137.3,1152.8,1164.1,1177.4,1196.2
+8,Net operating surplus,2775.2,2858.1,3018.5,3007.0,2949.9,2999.3,3031.4,3093.3
+9,Net interest and miscellaneous payments,321.7,207.0,171.1,183.9,177.0,170.1,166.0,171.4
+10,Business current transfer payments (net),126.4,116.7,157.8,115.9,190.6,138.1,149.5,152.9
+11,Corporate profits with inventory valuation and capital consumption adjustments,2327.0,2534.4,2689.6,2707.2,2582.3,2691.1,2716.0,2769.1
+12,Taxes on corporate income,462.0,498.4,547.3,525.2,527.0,552.4,544.1,565.8
+13,Profits after tax with inventory valuation and capital consumption adjustments,1865.0,2036.0,2142.3,2182.0,2055.3,2138.7,2171.9,2203.3
+14,Net dividends,1263.6,1341.7,1371.3,1434.5,1376.8,1307.5,1366.2,1434.8
+15,Undistributed profits with inventory valuation and capital consumption adjustments,601.4,694.3,771.0,747.4,678.6,831.2,805.7,768.5
+16,Profits before tax (without inventory valuation and capital consumption adjustments),2457.6,2589.1,2874.7,2754.1,2763.2,2862.9,2888.2,2984.6
+17,Profits after tax (without inventory valuation and capital consumption adjustments),1995.5,2090.7,2327.5,2228.9,2236.2,2310.6,2344.1,2418.9
+18,Inventory valuation adjustment,-141.1,29.8,-15.6,40.4,-17.1,-3.9,-0.5,-40.9
+19,Capital consumption adjustment,10.6,-84.5,-169.5,-87.3,-163.8,-168.0,-171.7,-174.7
+20,Gross value added of nonfinancial corporate business 1,11396.5,11562.5,12071.6,11749.7,11933.2,12006.9,12092.5,12252.8
+21,Consumption of fixed capital 2,1809.9,1888.0,1966.0,1915.7,1934.0,1955.7,1977.0,1997.3
+22,Net value added 3,9586.6,9674.5,10105.6,9834.1,9999.2,10051.3,10115.5,10255.6
+23,Price per unit of real gross value added of nonfinancial corporate business 4,1.184,1.225,1.239,1.235,1.235,1.239,1.24,1.241
+24,Compensation of employees (unit labor cost),0.666,0.693,0.702,0.694,0.704,0.703,0.701,0.7
+25,Unit nonlabor cost,0.313,0.312,0.314,0.31,0.314,0.311,0.314,0.315
+26,Consumption of fixed capital,0.176,0.187,0.189,0.188,0.187,0.189,0.19,0.191
+27,Taxes on production and imports less subsidies plus business current transfer payments (net),0.109,0.107,0.11,0.107,0.113,0.108,0.11,0.11
+28,Net interest and miscellaneous payments,0.028,0.018,0.014,0.016,0.015,0.014,0.014,0.014
+29,Corporate profits with inventory valuation and capital consumption adjustments (unit profits from current production),0.204,0.219,0.223,0.23,0.216,0.224,0.225,0.226
+30,Taxes on corporate income,0.041,0.043,0.045,0.045,0.044,0.046,0.045,0.046
+31,Profits after tax with inventory valuation and capital consumption adjustments,0.164,0.176,0.177,0.186,0.172,0.178,0.18,0.18
+r Revised,,,,,,,,,
+"1. The current-dollar gross value added is deflated using the gross value added chain-type price index for nonfinancial industries from the GDP-by-industry accounts. For periods when this price index is not available, the chain-type price index for GDP goods and structures is used.",,,,,,,,,
+"2. Chained-dollar consumption of fixed capital of nonfinancial corporate business is calculated as the product of the chain-type quantity index and the 2017 current-dollar value of the corresponding series, divided by 100.",,,,,,,,,
+3. Chained-dollar net value added of nonfinancial corporate business is the difference between the gross value added and the consumption of fixed capital.,,,,,,,,,
+4. The deflator for gross value added of nonfinancial corporate business divided by 100.,,,,,,,,,
+Note. Estimates in this table are based on the 2017 North American Industry Classification System (NAICS).,,,,,,,,,

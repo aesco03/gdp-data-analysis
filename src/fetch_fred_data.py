@@ -21,7 +21,26 @@ indicators = {
     "Private R&D (Nominal)": "Y006RC1Q027SBEA",
     "Gov R&D (Nominal)": "Y057RC1Q027SBEA",
     "Total R&D (Nominal GDP share)": "Y694RC1Q027SBEA",
+    # ───────── New tech & wage channels ─────────
+    "ICT Equip. + Software Invest.":  "A679RL1Q225SBEA",   # BEA Table 5.3.6
+    "Real Hourly Compensation":       "COMPRNFB",
+
+    # ───────── Innovation proxy ─────────
+    "Total Patents Granted":          "PATENTUSALLTOTAL",
+
+    # ───────── Macro controls ─────────
+    "Fed Funds Rate":                 "FEDFUNDS",
+    "10-Year Treasury Yield":         "GS10",
+    "NBER Recession Dummy":           "USREC",
+
+    # (optional) Defense spending if you want war-era controls
+    "Defense Outlays (GDP)":        "FDEFX",
 }
+
+""""Private R&D (Real)": "Y006RX1Q020SBEA",
+"Total R&D (Real)": "Y694RX1Q020SBEA"
+
+"""
 
 output_dir = "data/raw/fred/"
 os.makedirs(output_dir, exist_ok=True)
