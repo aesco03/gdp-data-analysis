@@ -1,29 +1,26 @@
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
 #Load GDP data
-gdp = pd.read_csv('data/processed/GPDIC1_normalized.csv')
+gdp = pd.read_csv('data/processed/maddison_gdp.csv')
+#Filtered to show gdp for the US specifically
+gdp = gdp[gdp['country'] == 'United States']
+gdp.rename(columns={'gdp_pc_2011usd': 'GDP'}, inplace=True)
+#What was mainly changed ^
 
-gdp['date'] = pd.to_datetime(gdp['date'])
-gdp['year'] = gdp['date'].dt.year
-gdp.rename(columns={'Gross_Private_Investment_real': 'GDP'}, inplace=True)
-
-#Load Technology Timeline
+#Placeholder tech breakthrough timeline
 tech = pd.read_csv('src/tech_timeline.csv')
-
-
 
 #Filters tech events to only match GDP years
 tech = tech[(tech['year'] >= gdp['year'].min()) & (tech['year'] <= gdp['year'].max())]
 
-#Plot
+#plot
 plt.figure(figsize=(20, 8))
-plt.plot(gdp['year'], gdp['GDP'], label="Real GDP", color='blue')
+plt.plot(gdp['year'], gdp['GDP'], label="Real GDP Per Capita (2011 USD)", color='blue')
 
-#Labels
+#labels
 plt.xlabel("Year")
-plt.ylabel("Real GDP (Chained 2012 Dollars)")
+plt.ylabel("Real GDP Per Capita (2011 USD)")
 plt.title("GDP Over Time with Technology Breakthroughs")
 
 # Vertical lines and labels
@@ -38,6 +35,5 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
 
 
