@@ -16,7 +16,6 @@ base_cpi = cpi.loc[cpi['year'] == BASE_YEAR, 'CPI'].values[0]
 
 # Series to normalize
 to_normalize = {
-    "GPDIC1": "Gross_Private_Investment",
     "Y006RC1Q027SBEA": "Private_RD",
     "Y057RC1Q027SBEA": "Gov_RD",
 }

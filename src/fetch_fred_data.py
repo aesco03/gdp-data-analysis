@@ -22,7 +22,7 @@ indicators = {
     "Gov R&D (Nominal)": "Y057RC1Q027SBEA",
     "Total R&D (Nominal GDP share)": "Y694RC1Q027SBEA",
     # ───────── New tech & wage channels ─────────
-    "ICT Equip. + Software Invest.":  "A679RL1Q225SBEA",   # BEA Table 5.3.6
+    "ICT Equip. + Software Invest.": "A679RC1Q027SBEA",   # BEA Table 5.3.6
     "Real Hourly Compensation":       "COMPRNFB",
 
     # ───────── Innovation proxy ─────────

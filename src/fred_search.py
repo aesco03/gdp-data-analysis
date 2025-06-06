@@ -11,7 +11,6 @@ fred = Fred(api_key=FRED_API_KEY)
 print("Searching for R&D data series in FRED...")
 search_results = fred.search('research and development')
 
-# First, let's check what type of data we're getting
 print(f"Type of search_results: {type(search_results)}")
 
 # If it's a DataFrame (which is likely)

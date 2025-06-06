@@ -1,78 +1,112 @@
 #!/usr/bin/env python3
 """
-QC and standardise the *micro-economic* tables
-  • private_events.csv
-  • public_yearly.csv
+ETL for macro-economic series:
+  • FRED CSVs       → data/raw/fred/*.csv
+  • BLS TXT/CSVs    → data/raw/bls/*.txt, *.csv
+  • BEA Excel       → data/raw/bea/*.xls*
+  • Maddison Excel  → data/raw/maddison/*.xls*
 
-Usage:
-    python micro_clean.py
-
-Creates cleaned files in:  ../data/clean/
-      private_events.parquet (or .csv)
-      public_yearly.parquet  (or .csv)
+Output: tidy 2-column CSVs in data/clean/, wiping out any old files first.
 """
 
-import pandas as pd, re, importlib.util
+import pandas as pd, re, shutil
 from pathlib import Path
 
-# ── paths ──────────────────────────────────────────────────────────
-HERE         = Path(__file__).resolve().parent          # src/
-RAW_PRIMARY  = HERE                                     # first look here
-RAW_FALLBACK = HERE.parent / "data" / "raw"             # optional second place
-CLEAN        = HERE.parent / "data" / "clean"
-CLEAN.mkdir(parents=True, exist_ok=True)
+# ── Paths ───────────────────────────────────────────────────────────
+BASE      = Path(__file__).resolve().parent        # project root
+RAW_DIR   = BASE / "data" / "raw"
+CLEAN_DIR = BASE / "data" / "clean"
 
-SAVE_PARQUET = importlib.util.find_spec("pyarrow") is not None \
-               or importlib.util.find_spec("fastparquet") is not None
+# 1) Nuke the old clean folder so NOTHING lingers
+if CLEAN_DIR.exists():
+    shutil.rmtree(CLEAN_DIR)
+CLEAN_DIR.mkdir(parents=True, exist_ok=True)
 
-# ── helper: locate file ────────────────────────────────────────────
-def load_csv(name: str) -> pd.DataFrame:
-    for root in (RAW_PRIMARY, RAW_FALLBACK):
-        f = root / name
-        if f.exists():
-            return pd.read_csv(f)
-    raise FileNotFoundError(f"{name} not found in src/ or data/raw/")
+def sanitize(name: str) -> str:
+    """Make a filesystem-safe stem from any string."""
+    return re.sub(r"[^\w]+", "_", name).strip("_").lower()
 
-# ── helper: QC & basic cleaning ────────────────────────────────────
-def qc(df: pd.DataFrame, name: str) -> pd.DataFrame:
-    print(f"\nQC ➜ {name}")
-    print(df.describe(include='all').T)
+def save_csv(df: pd.DataFrame, stem: str):
+    """Save df[date,value] to data/clean/stem.csv."""
+    out = CLEAN_DIR / f"{stem}.csv"
+    df.to_csv(out, index=False)
+    print(f"✓ saved {out.name}")
 
-    # 1) canonical NA & dtype
-    df.replace({"—": None, "": None}, inplace=True)
-    df = df.convert_dtypes()
+# ── 2) FRED series ──────────────────────────────────────────────────
+fred_folder = RAW_DIR / "fred"
+if fred_folder.exists():
+    for f in fred_folder.glob("*.csv"):
+        df = pd.read_csv(f)
+        # assume first two columns are date + value
+        df = df.rename(columns={df.columns[0]:"date", df.columns[1]:"value"})
+        df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        stem = f"fred_{sanitize(f.stem)}"
+        save_csv(df[["date","value"]], stem)
 
-    # 2) forward/back fill tiny holes (if any)
-    df.ffill(inplace=True); df.bfill(inplace=True)
+# ── 3) BLS series ──────────────────────────────────────────────────
+bls_folder = RAW_DIR / "bls"
+if bls_folder.exists():
+    for f in bls_folder.iterdir():
+        if f.suffix.lower() not in [".txt", ".csv"]:
+            continue
+        print(f"Processing BLS file: {f.name}")
+        sep = "\t" if f.suffix.lower()==".txt" else ","
+        df = pd.read_csv(f, sep=sep, comment="#", dtype=str)
 
-    # 3) derived cols & name harmonisation
-    if "valuation_usd" in df.columns and "valuation_b" not in df.columns:
-        df["valuation_b"] = df["valuation_usd"] / 1_000_000_000
+        # Build a date column
+        if {"year","period"}.issubset(df.columns):
+            df["date"] = pd.to_datetime(
+                df["year"].astype(str) + df["period"].str[1:] + "01",
+                errors="coerce"
+            )
+        elif "date" in df.columns:
+            df["date"] = pd.to_datetime(df["date"], errors="coerce")
+        else:
+            print(f"⚠️  skipping {f.name}: no date info")
+            continue
 
-    if "date" in df.columns and "year" not in df.columns:
-        df["year"] = pd.to_datetime(df["date"], errors="coerce").dt.year
+        # Find the first numeric column
+        num_cols = [c for c in df.columns if c not in ("year","period","date")]
+        valcol = None
+        for c in num_cols:
+            try:
+                pd.to_numeric(df[c].str.replace(",",""), errors="raise")
+                valcol = c
+                break
+            except Exception:
+                continue
+        if not valcol:
+            print(f"⚠️  skipping {f.name}: no numeric column found")
+            continue
 
-    # 4) plausibility checks (only if columns exist)
-    if "employees" in df.columns:
-        assert (df["employees"] > 0).all(),  "neg/zero head-count"
-    if "valuation_b" in df.columns:
-        assert (df["valuation_b"] < 5_000).all(), "valuation too large?"
-    if "year" in df.columns:
-        assert (df["year"].between(1970, 2025)).all(), "year out of range"
+        df["value"] = pd.to_numeric(df[valcol].str.replace(",",""), errors="coerce")
+        stem = f"bls_{sanitize(f.stem)}"
+        save_csv(df[["date","value"]], stem)
 
-    return df
+# ── 4) BEA key source ───────────────────────────────────────────────
+bea_folder = RAW_DIR / "bea"
+if bea_folder.exists():
+    for f in bea_folder.glob("*.xls*"):
+        try:
+            df = pd.read_excel(f, sheet_name=0, skiprows=7)
+            df = df.iloc[:, :2].rename(columns={df.columns[0]:"year", df.columns[1]:"value"})
+            df["date"] = pd.to_datetime(df["year"], format="%Y", errors="coerce")
+            stem = f"bea_{sanitize(f.stem)}"
+            save_csv(df[["date","value"]], stem)
+        except Exception as e:
+            print(f"⚠️  could not process BEA file {f.name}: {e}")
 
-# ── process each micro table ───────────────────────────────────────
-for fn in ["private_events.csv", "public_yearly.csv"]:
-    df  = load_csv(fn)
-    df  = qc(df, fn)
+# ── 5) Maddison Project GDP ─────────────────────────────────────────
+mpd_folder = RAW_DIR / "maddison"
+if mpd_folder.exists():
+    for f in mpd_folder.glob("*.xls*"):
+        try:
+            mpd = pd.read_excel(f, sheet_name="Full data", engine="openpyxl")
+            usa = mpd[mpd["countrycode"]=="USA"]
+            df  = usa[["year","rgdpnapc"]].rename(columns={"rgdpnapc":"value"})
+            df["date"] = pd.to_datetime(df["year"], format="%Y", errors="coerce")
+            save_csv(df[["date","value"]], "maddison_gdp")
+        except Exception as e:
+            print(f"⚠️  could not process Maddison file {f.name}: {e}")
 
-    out = CLEAN / f"{fn[:-4]}.{'parquet' if SAVE_PARQUET else 'csv'}"
-    if SAVE_PARQUET:
-        df.to_parquet(out, index=False)
-    else:
-        df.to_csv(out, index=False)
-
-    print("✔ saved →", out.relative_to(Path.cwd()))
-
-print("\n🏁 micro_clean.py completed successfully")
+print("\n🏁 macro_clean.py completed — cleaned CSVs in data/clean/")
